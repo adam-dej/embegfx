@@ -41,8 +41,8 @@ bool __pcf8531_set_pixel(uintpix x, uintpix y, void *data) {
 bool __pcf8531_unset_pixel(uintpix x, uintpix y, void *data) {
 
 	if (x < PCF8531_WIDTH && y < PCF8531_HEIGHT) {
-		uint8_t bank = x / 8;
-		uint8_t bit = x - (8 * bank);
+		uint8_t bank = y / 8;
+		uint8_t bit = y - (8 * bank);
 		((pcf8531_device_data*)data)->framebuffer[x][bank] &= ~(1 << bit);
 		return true;
 	}
