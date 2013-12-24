@@ -23,14 +23,14 @@
 #include "virtual_mirror.h"
 
 bool __mirror_set_pixel(uintpix x, uintpix y, void *data) {
-	((mirror_data*)data)->display->set_pixel(
+	return ((mirror_data*)data)->display->set_pixel(
 		(((mirror_data*)data)->mode & 1) ? (((mirror_data*)data)->x - x) : x,
 		(((mirror_data*)data)->mode & 2) ? (((mirror_data*)data)->y - y) : y,
 		((mirror_data*)data)->display->data);
 }
 
 bool __mirror_unset_pixel(uintpix x, uintpix y, void *data) {
-	((mirror_data*)data)->display->unset_pixel(
+	return ((mirror_data*)data)->display->unset_pixel(
 		(((mirror_data*)data)->mode & 1) ? (((mirror_data*)data)->x - x) : x,
 		(((mirror_data*)data)->mode & 2) ? (((mirror_data*)data)->y - y) : y,
 		((mirror_data*)data)->display->data);
