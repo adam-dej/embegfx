@@ -204,3 +204,40 @@ bool fill_triangle_1bit(uintpix x0, uintpix y0, uintpix x1, uintpix y1, uintpix 
     return success;
 
 }
+
+bool __draw_bitmap_f0(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void* address), DISPLAY_1BIT *display) {
+
+	uint8_t x, y;
+ 	uint8_t maxX = read_byte(address+1);
+ 	uint8_t maxY = read_byte(address+2);
+ 	uint8_t bit = 0;
+ 	uint16_t byte = 0;
+
+ 	bool success = true;
+
+ 	for (y = 0; y < maxY; y++) {
+ 		for (x = 0; x < maxX; x++) {
+ 			if (read_byte(address+3+byte) & (1 << bit))
+ 				success &= display->set_pixel(x+x0, y+y0, display->data);
+ 			bit++;
+ 			if (bit == 8) {
+ 				bit = 0;
+ 				byte++;
+ 			}
+ 		}
+ 	}
+
+ 	return success;
+
+}
+
+bool draw_bitmap_1bit(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
+
+	uint8_t format = read_byte(address);
+
+	switch(format) {
+		case 0: return __draw_bitmap_f0(x0, y0, address, read_byte, display);
+		default: return false; //Unsupported format
+
+	}
+}
