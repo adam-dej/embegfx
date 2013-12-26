@@ -251,6 +251,8 @@ bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
  	uint8_t sizeY = read_byte(font+2);
  	uint8_t offsetInc = sizeX + read_byte(font+3);
 
+ 	bool success = true;
+
  	while (*string) {
 
  		if (*string >= '!' && *string <= '~') {
@@ -258,7 +260,7 @@ bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
  				for (x = 0; x < sizeX; x++) {
  					uint16_t bit = ((sizeX*sizeY)*(*string - '!'))+(x+(y*sizeX));
  					uint8_t byte = read_byte(font+4+(bit/8));
- 					if (byte & (1 << bit%8)) display->set_pixel(x0+offset+x, y0+y, display->data);
+ 					if (byte & (1 << bit%8)) success &= display->set_pixel(x0+offset+x, y0+y, display->data);
  				}
  			}
  		}
@@ -266,6 +268,8 @@ bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
  		offset += offsetInc;
  		string++;
  	}
+
+ 	return success;
 
 }
 
