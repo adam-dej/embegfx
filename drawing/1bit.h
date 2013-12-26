@@ -35,6 +35,7 @@ bool fill_circle_1bit(uintpix xm, uintpix ym, uintpix r, bool color, DISPLAY_1BI
 bool fill_ellipse_1bit(uintpix x0, uintpix y0, uintpix x1, uintpix y1, bool color, DISPLAY_1BIT *display);
 
 bool draw_bitmap_1bit(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display);
+bool draw_text_1bit(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display);
 
 
 #endif
