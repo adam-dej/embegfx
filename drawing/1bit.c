@@ -273,12 +273,44 @@ bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
 
 }
 
+bool __draw_text_f2(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
+
+	uint8_t x, y;
+ 	uint8_t offset = 0;
+
+ 	uint8_t sizeX = read_byte(font+1);
+ 	uint8_t sizeY = read_byte(font+2);
+ 	uint8_t offsetInc = sizeX + read_byte(font+3);
+
+ 	bool success = true;
+
+ 	while (*string) {
+
+ 		if (*string >= '-' && *string <= ':') {
+ 			for (y = 0; y < sizeY; y++) {
+ 				for (x = 0; x < sizeX; x++) {
+ 					uint16_t bit = ((sizeX*sizeY)*(*string - '-'))+(x+(y*sizeX));
+ 					uint8_t byte = read_byte(font+4+(bit/8));
+ 					if (byte & (1 << bit%8)) success &= display->set_pixel(x0+offset+x, y0+y, display->data);
+ 				}
+ 			}
+ 		}
+
+ 		offset += offsetInc;
+ 		string++;
+ 	}
+
+ 	return success;
+
+}
+
 bool draw_text_1bit(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
 
 	uint8_t format = read_byte(font);
 
 	switch(format) {
 		case 1: return __draw_text_f1(x0, y0, string, font, read_byte, display);
+		case 2: return __draw_text_f2(x0, y0, string, font, read_byte, display);
 		default: return false; //Unsupported format
 	}
 }
