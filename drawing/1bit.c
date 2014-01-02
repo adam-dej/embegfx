@@ -242,7 +242,7 @@ bool draw_bitmap_1bit(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)
 	}
 }
 
-bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
+bool __draw_text_f1_f2(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display, bool f2) {
 
 	uint8_t x, y;
  	uint8_t offset = 0;
@@ -253,43 +253,15 @@ bool __draw_text_f1(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
 
  	bool success = true;
 
- 	while (*string) {
-
- 		if (*string >= '!' && *string <= '~') {
- 			for (y = 0; y < sizeY; y++) {
- 				for (x = 0; x < sizeX; x++) {
- 					uint16_t bit = ((sizeX*sizeY)*(*string - '!'))+(x+(y*sizeX));
- 					uint8_t byte = read_byte(font+4+(bit/8));
- 					if (byte & (1 << bit%8)) success &= display->set_pixel(x0+offset+x, y0+y, display->data);
- 				}
- 			}
- 		}
-
- 		offset += offsetInc;
- 		string++;
- 	}
-
- 	return success;
-
-}
-
-bool __draw_text_f2(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
-
-	uint8_t x, y;
- 	uint8_t offset = 0;
-
- 	uint8_t sizeX = read_byte(font+1);
- 	uint8_t sizeY = read_byte(font+2);
- 	uint8_t offsetInc = sizeX + read_byte(font+3);
-
- 	bool success = true;
+ 	char first_char = (f2 ? '-' : '!');
+ 	char last_char = (f2 ? ':' : '~');
 
  	while (*string) {
 
- 		if (*string >= '-' && *string <= ':') {
+ 		if (*string >= first_char && *string <= last_char) {
  			for (y = 0; y < sizeY; y++) {
  				for (x = 0; x < sizeX; x++) {
- 					uint16_t bit = ((sizeX*sizeY)*(*string - '-'))+(x+(y*sizeX));
+ 					uint16_t bit = ((sizeX*sizeY)*(*string - first_char))+(x+(y*sizeX));
  					uint8_t byte = read_byte(font+4+(bit/8));
  					if (byte & (1 << bit%8)) success &= display->set_pixel(x0+offset+x, y0+y, display->data);
  				}
@@ -309,8 +281,8 @@ bool draw_text_1bit(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*r
 	uint8_t format = read_byte(font);
 
 	switch(format) {
-		case 1: return __draw_text_f1(x0, y0, string, font, read_byte, display);
-		case 2: return __draw_text_f2(x0, y0, string, font, read_byte, display);
+		case 1: return __draw_text_f1_f2(x0, y0, string, font, read_byte, display, false);
+		case 2: return __draw_text_f1_f2(x0, y0, string, font, read_byte, display, true);
 		default: return false; //Unsupported format
 	}
 }
