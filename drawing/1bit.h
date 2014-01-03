@@ -34,8 +34,8 @@ bool fill_triangle_1bit(uintpix x0, uintpix y0, uintpix x1, uintpix y1, uintpix 
 bool fill_circle_1bit(uintpix xm, uintpix ym, uintpix r, bool color, DISPLAY_1BIT *display);
 bool fill_ellipse_1bit(uintpix x0, uintpix y0, uintpix x1, uintpix y1, bool color, DISPLAY_1BIT *display);
 
-bool draw_bitmap_1bit(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display);
-bool draw_text_1bit(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display);
+bool draw_bitmap_1bit(uintpix x0, uintpix y0, const uint8_t *bitmap, uint8_t(*read_byte)(const uint8_t *address), DISPLAY_1BIT *display);
+bool draw_text_1bit(uintpix x0, uintpix y0, const char *string, const uint8_t *font, uint8_t(*read_byte)(const uint8_t *address), DISPLAY_1BIT *display);
 
 
 #endif

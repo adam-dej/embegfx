@@ -205,11 +205,11 @@ bool fill_triangle_1bit(uintpix x0, uintpix y0, uintpix x1, uintpix y1, uintpix 
 
 }
 
-bool __draw_bitmap_f0(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void* address), DISPLAY_1BIT *display) {
+bool __draw_bitmap_f0(uintpix x0, uintpix y0, const uint8_t *bitmap, uint8_t(*read_byte)(const uint8_t* address), DISPLAY_1BIT *display) {
 
 	uint8_t x, y;
- 	uint8_t maxX = read_byte(address+1);
- 	uint8_t maxY = read_byte(address+2);
+ 	uint8_t maxX = read_byte(bitmap+1);
+ 	uint8_t maxY = read_byte(bitmap+2);
  	uint8_t bit = 0;
  	uint16_t byte = 0;
 
@@ -217,7 +217,7 @@ bool __draw_bitmap_f0(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)
 
  	for (y = 0; y < maxY; y++) {
  		for (x = 0; x < maxX; x++) {
- 			if (read_byte(address+3+byte) & (1 << bit))
+ 			if (read_byte(bitmap+3+byte) & (1 << bit))
  				success &= display->set_pixel(x+x0, y+y0, display->data);
  			bit++;
  			if (bit == 8) {
@@ -231,18 +231,18 @@ bool __draw_bitmap_f0(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)
 
 }
 
-bool draw_bitmap_1bit(uintpix x0, uintpix y0, void *address, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
+bool draw_bitmap_1bit(uintpix x0, uintpix y0, const uint8_t *bitmap, uint8_t(*read_byte)(const uint8_t *address), DISPLAY_1BIT *display) {
 
-	uint8_t format = read_byte(address);
+	uint8_t format = read_byte(bitmap);
 
 	switch(format) {
-		case 0: return __draw_bitmap_f0(x0, y0, address, read_byte, display);
+		case 0: return __draw_bitmap_f0(x0, y0, bitmap, read_byte, display);
 		default: return false; //Unsupported format
 
 	}
 }
 
-bool __draw_text_f1_f2(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display, bool f2) {
+bool __draw_text_f1_f2(uintpix x0, uintpix y0, const char *string, const uint8_t *font, uint8_t(*read_byte)(const uint8_t *address), DISPLAY_1BIT *display, bool f2) {
 
 	uint8_t x, y;
  	uint8_t offset = 0;
@@ -276,7 +276,7 @@ bool __draw_text_f1_f2(uintpix x0, uintpix y0, char *string, void *font, uint8_t
 
 }
 
-bool draw_text_1bit(uintpix x0, uintpix y0, char *string, void *font, uint8_t(*read_byte)(void *address), DISPLAY_1BIT *display) {
+bool draw_text_1bit(uintpix x0, uintpix y0, const char *string, const uint8_t *font, uint8_t(*read_byte)(const uint8_t *address), DISPLAY_1BIT *display) {
 
 	uint8_t format = read_byte(font);
 
