@@ -15,10 +15,10 @@ Supported devices
   - pcf8531 - based displays
   - Virtual mirroring device
 
-Why aren't low level interface drivers available?
--------------------------------------------------
+Why aren't low level interface drivers implemented?
+---------------------------------------------------
 
-  - More things that displays can be connected to those interfaces, therefore graphic library has no business implementing drivers for them.
+  - More things than displays can be connected to those interfaces, therefore graphic library has no business implementing drivers for them.
   - Letting the user implement those leads to more freedom in the design.
   - Not implementing MCU-specific features in the library makes it more universal for usage on many MCU's
   - It allows for more extensibility: no one ever said that for example display which would usually connect directly to the I/O lines of the processor won't be connected through an I2C GPIO extender.
